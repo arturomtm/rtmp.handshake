@@ -89,15 +89,13 @@ export default class C1 {
 
     this._dh = crypto.createDiffieHellman(RFC2409_PRIME_1024);
 
-    const key_offset = random.integer(0, 764 - 128 - 4);
-    this._buf.writeUInt32BE(key_offset, 1532);
     const key = this._dh.generateKeys();
-    key.copy(this._buf, 772 + key_offset);
+    const keyOffset = this.getKeyOffset()
+    key.copy(this._buf, keyOffset);
 
-    const digest_offset = random.integer(0, 764 - 4 - 32);
-    this._buf.writeUInt32BE(digest_offset, 8);
     const digest = hmacFP(this.getJoinPart());
-    digest.copy(this._buf, 12 + digest_offset);
+    const digestOffset = this.getDigestOffset()
+    digest.copy(this._buf, digestOffset)
 
     return this._buf;
   }
