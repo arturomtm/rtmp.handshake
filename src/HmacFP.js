@@ -12,7 +12,8 @@ const FP_PRIVATE_KEY = new Buffer([
 ]);
 
 export default (input) => {
-  const hmac =  crypto.createHmac('sha256', FP_PRIVATE_KEY);
+  const genuineFP = FP_PRIVATE_KEY.slice(0, 30)
+  const hmac =  crypto.createHmac('sha256', genuineFP);
   hmac.update(input);
 
   return hmac.digest();
