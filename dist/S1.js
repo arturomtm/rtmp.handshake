@@ -18,7 +18,7 @@ var _HmacFMS = require('./HmacFMS');
 
 var _HmacFMS2 = _interopRequireDefault(_HmacFMS);
 
-var _is = require('./is');
+var _is = require('is');
 
 var _is2 = _interopRequireDefault(_is);
 
@@ -131,6 +131,8 @@ var S1 = function () {
     value: function fromBuffer(buf) {
       var s1 = new S1();
       s1._buf = buf;
+
+      return s1;
     }
   }]);
 

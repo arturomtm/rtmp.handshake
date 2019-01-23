@@ -10,7 +10,7 @@ var _crypto = require('crypto');
 
 var _crypto2 = _interopRequireDefault(_crypto);
 
-var _HmacFP = require('HmacFP');
+var _HmacFP = require('./HmacFP');
 
 var _HmacFP2 = _interopRequireDefault(_HmacFP);
 
@@ -31,8 +31,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var random = (0, _randomJs2.default)();
-
 var C1_VERSION = 0x80000702;
+var RFC2409_PRIME_1024 = Buffer.from("FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD1" + "29024E088A67CC74020BBEA63B139B22514A08798E3404DD" + "EF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245" + "E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7ED" + "EE386BFB5A899FA5AE9F24117C4B1FE649286651ECE65381" + "FFFFFFFFFFFFFFFF", "hex");
 
 var C1 = function () {
   function C1() {
@@ -82,13 +82,15 @@ var C1 = function () {
     }
   }, {
     key: 'encode',
-    value: function encode(dh) {
+    value: function encode() {
       this._buf.writeUInt32BE(_moment2.default.unix(), 0);
       this._buf.writeUInt32BE(C1_VERSION, 4);
 
+      this._dh = _crypto2.default.createDiffieHellman(RFC2409_PRIME_1024);
+
       var key_offset = random.integer(0, 764 - 128 - 4);
       this._buf.writeUInt32BE(key_offset, 1532);
-      var key = dh.generateKeys();
+      var key = this._dh.generateKeys();
       key.copy(this._buf, 772 + key_offset);
 
       var digest_offset = random.integer(0, 764 - 4 - 32);

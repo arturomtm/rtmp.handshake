@@ -37,3 +37,11 @@ exports.C2 = _C6.default;
 exports.S0 = _S2.default;
 exports.S1 = _S4.default;
 exports.S2 = _S6.default;
+exports.default = {
+  C0: _C2.default,
+  C1: _C4.default,
+  C2: _C6.default,
+  S0: _S2.default,
+  S1: _S4.default,
+  S2: _S6.default
+};

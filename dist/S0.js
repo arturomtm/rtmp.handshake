@@ -21,7 +21,7 @@ var S0 = function () {
   }, {
     key: "validate",
     value: function validate() {
-      if (Buffer.compare(S0, this._buf) !== 0) {
+      if (Buffer.compare(S0.DATA, this._buf) !== 0) {
         return false;
       }
 
@@ -48,5 +48,5 @@ var S0 = function () {
   return S0;
 }();
 
-S0.S0 = Buffer.from([0x03]);
+S0.DATA = Buffer.from([0x03]);
 exports.default = S0;

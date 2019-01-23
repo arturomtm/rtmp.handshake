@@ -6,15 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _S = require('./S1');
-
-var _S2 = _interopRequireDefault(_S);
-
 var _crypto = require('crypto');
 
 var _crypto2 = _interopRequireDefault(_crypto);
 
-var _HmacFMS = require('HmacFMS');
+var _HmacFMS = require('./HmacFMS');
 
 var _HmacFMS2 = _interopRequireDefault(_HmacFMS);
 
@@ -40,19 +36,28 @@ var C2 = function () {
   }, {
     key: 'encode',
     value: function encode() {
-      var hmac = _crypto2.default.createHmac((0, _HmacFMS2.default)(this._s1.getDigest()));
+      var hmac = _crypto2.default.createHmac('sha256', (0, _HmacFMS2.default)(this._s1.getDigest()));
       hmac.update(this.getRandom());
       var digest = hmac.digest();
       digest.copy(this._buf, 1504);
 
       return this._buf;
     }
+  }, {
+    key: 'validate',
+    value: function validate(s1) {
+      var hmac = _crypto2.default.createHmac((0, _HmacFMS2.default)(s1.getDigest()));
+      hmac.update(this.getRandom());
+      var digest = hmac.digest();
+
+      return Buffer.compare(digest, this.getDigest()) === 0;
+    }
   }], [{
     key: 'create',
-    value: function create(buf_c1) {
+    value: function create(s1) {
       var c2 = new C2();
       c2._buf = _crypto2.default.randomBytes(1536);
-      c2._s1 = _S2.default.fromBuffer(buf_c1);
+      c2._s1 = s1;
 
       return c2;
     }
