@@ -53,31 +53,33 @@ export default class C1 {
   }
 
   getDigestOffset() {
-    return this._buf.readUInt32BE(8);
+    const digest_pointer = this._readPointerAt(DIGEST_POINTER_OFFSET)
+    return DIGEST_CHUNK_OFFSET  + (digest_pointer % DIGEST_CHUNK_LENGTH)
   }
 
   getDigest() {
     const digest_offset = this.getDigestOffset();
 
-    return this._buf.slice(12 + digest_offset, 44 + digest_offset);
+    return this._buf.slice(digest_offset, DIGEST_LENGTH + digest_offset);
   }
 
   getKeyOffset() {
-    return this._buf.readUInt32BE(1532);
+    const key_pointer = this._readPointerAt(KEY_POINTER_OFFSET)
+    return KEY_CHUNK_OFFSET + (key_pointer % KEY_CHUNK_LENGTH)
   }
 
   getkey() {
     const key_offset = this.getKeyOffset();
 
-    return this._buf.slice(772 + key_offset, 900 + key_offset);
+    return this._buf.slice(key_offset, KEY_LENGTH + key_offset);
   }
 
   getJoinPart() {
     const digest_offset = this.getDigestOffset();
 
     return Buffer.concat([
-      this._buf.slice(0, 12 + digest_offset),
-      this._buf.slice(44 + digest_offset)
+      this._buf.slice(0, digest_offset),
+      this._buf.slice(DIGEST_LENGTH + digest_offset)
     ]);
   }
 
@@ -112,5 +114,13 @@ export default class C1 {
     }
 
     return true;
+  }
+
+  _readPointerAt(start) {
+      let index = 0
+      for (let i = start; i < start + 4; ++i) {
+        index += this._buf.readUInt8(i)
+      }
+      return index
   }
 }
